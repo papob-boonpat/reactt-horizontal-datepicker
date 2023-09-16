@@ -3,7 +3,7 @@
   scrollbar-color: transparent transparent;
 
   &::-webkit-scrollbar {
-    width: 1px;
+    display: none;
   }
 
   &::-webkit-scrollbar-track {
@@ -15,6 +15,8 @@
   }
 }
 
-.no-scrollbars::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+.item {
+  background-color: bisque;
+  border: 1px solid #000;
+  box-sizing: border-box;
 }
