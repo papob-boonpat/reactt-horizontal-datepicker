@@ -1,11 +1,12 @@
 import { FixedSizeList, ListOnScrollProps } from "react-window";
 
 import classes from "./App.module.css";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, useRef, useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 import ReactVirtualizedAutoSizer from "react-virtualized-auto-sizer";
+import Picker from "./Picker";
 const moment = extendMoment(Moment);
 function App() {
   const loader = useRef<FixedSizeList<{ date: Moment.Moment }[]> | null>(null);
@@ -83,6 +84,7 @@ function App() {
           </InfiniteLoader>
         )}
       </ReactVirtualizedAutoSizer>
+      <Picker />
     </div>
   );
 }
