@@ -5,6 +5,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import ReactVirtualizedAutoSizer from "react-virtualized-auto-sizer";
 const moment = extendMoment(Moment);
 function App() {
   const loader = useRef<FixedSizeList<{ date: Moment.Moment }[]> | null>(null);
@@ -32,54 +33,56 @@ function App() {
     clearTimeout(debounce.current);
     debounce.current = setTimeout(() => {
       loader.current?.scrollToItem(
-        Math.round(prop.scrollOffset / 100),
+        Math.round(prop.scrollOffset / (window.innerWidth / 7)),
         "start"
       );
     }, 50);
   };
 
-  useEffect(() => {}, []);
-
   return (
-    <div>
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={items.length + 1}
-        loadMoreItems={loadMoreItems}
-      >
-        {({ onItemsRendered, ref }) => (
-          <FixedSizeList
-            className={classes["no-scrollbars"]}
-            itemSize={100}
+    <div style={{ width: "100%", height: 80 }}>
+      <ReactVirtualizedAutoSizer disableHeight>
+        {({ width }) => (
+          <InfiniteLoader
+            isItemLoaded={isItemLoaded}
             itemCount={items.length + 1}
-            height={80}
-            itemData={items}
-            onItemsRendered={onItemsRendered}
-            width={window.innerWidth}
-            layout="horizontal"
-            onScroll={onScroll}
-            direction="rtl"
-            ref={(list) => {
-              ref(list);
-              loader.current = list;
-            }}
+            loadMoreItems={loadMoreItems}
           >
-            {({
-              index,
-              style,
-              data,
-            }: {
-              index: number;
-              style: CSSProperties;
-              data: { date: Moment.Moment }[];
-            }) => (
-              <div style={style} className={classes.item}>
-                {data[index].date.format("DD/MM")}
-              </div>
+            {({ onItemsRendered, ref }) => (
+              <FixedSizeList
+                className={classes["no-scrollbars"]}
+                itemSize={width / 7}
+                itemCount={items.length + 1}
+                height={80}
+                itemData={items}
+                onItemsRendered={onItemsRendered}
+                width={width}
+                layout="horizontal"
+                onScroll={onScroll}
+                direction="rtl"
+                ref={(list) => {
+                  ref(list);
+                  loader.current = list;
+                }}
+              >
+                {({
+                  index,
+                  style,
+                  data,
+                }: {
+                  index: number;
+                  style: CSSProperties;
+                  data: { date: Moment.Moment }[];
+                }) => (
+                  <div style={style} className={classes.item}>
+                    {data[index].date.format("DD/MM")}
+                  </div>
+                )}
+              </FixedSizeList>
             )}
-          </FixedSizeList>
+          </InfiniteLoader>
         )}
-      </InfiniteLoader>
+      </ReactVirtualizedAutoSizer>
     </div>
   );
 }
